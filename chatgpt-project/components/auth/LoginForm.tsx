@@ -6,17 +6,17 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import Submit from "./Submit";
 import { useFormValidate } from "@/hooks/useFormValidate";
-import { SignUpSchema } from "@/schemas/auth";
-import { TSignUpFormError } from "@/types/form";
+import { LoginFormSchema } from "@/schemas/auth";
+import { TLoginFormError } from "@/types/form";
 import FormMessage from "./FormMessage";
-import { signUp } from "@/actions/signup";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { login } from "@/actions/login";
 
-export default function SignUpForm() {
+export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const { errors, validateField } =
-    useFormValidate<TSignUpFormError>(SignUpSchema);
+    useFormValidate<TLoginFormError>(LoginFormSchema);
   const router = useRouter();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +28,7 @@ export default function SignUpForm() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    const response = await signUp(formData);
+    const response = await login(formData);
 
     if (response.success) {
       router.push(response.redirectUrl);
@@ -45,21 +45,10 @@ export default function SignUpForm() {
 
   return (
     <FormCard
-      title="회원가입"
-      footer={{ label: "이미 계정이 있으신가요", href: "/login" }}
+      title="로그인"
+      footer={{ label: "아직 계정이 없으신가요", href: "/signup" }}
     >
       <form className="space-y-6" onSubmit={handleSubmit}>
-        <div className="space-y-1">
-          <Label htmlFor="name">이름</Label>
-          <Input
-            id="name"
-            name="name"
-            placeholder="이름을 입력해주세요"
-            onChange={handleChange}
-            error={!!errors?.name}
-          />
-          {errors?.name && <FormMessage message={errors.name[0]} />}
-        </div>
         <div className="space-y-1">
           <Label htmlFor="email">이메일</Label>
           <Input
@@ -86,7 +75,7 @@ export default function SignUpForm() {
         </div>
 
         {error && <FormMessage message={error} />}
-        <Submit className="w-full">가입하기</Submit>
+        <Submit className="w-full">로그인</Submit>
       </form>
     </FormCard>
   );
